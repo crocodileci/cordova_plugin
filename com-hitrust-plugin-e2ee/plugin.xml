@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://cordova.apache.org/ns/plugins/1.0"
+           id="com-hitrust-plugin-e2ee"
+      version="0.0.1">
+    <name>com-hitrust-plugin-e2ee</name>
+
+    <js-module src="www/E2EE.js" name="E2EE">
+        <clobbers target="hitrust.plugins.e2ee" />
+    </js-module>
+
+    
+    <!-- TODO: Uncomment this if you would like to add Android support -->
+    <!-- android -->
+       
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="E2EE" >
+                <param name="android-package" value="com.hitrust.plugins.E2EE"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/android/E2EE.java" target-dir="src/com/hitrust/plugins" />
+    </platform>
+   
+
+    <!-- TODO: Uncomment this if you would like to add iOS support -->
+    <!-- ios -->
+    
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="E2EE">
+                <param name="ios-package" value="E2EE"/>
+            </feature>
+        </config-file>
+        <source-file src="src/ios/E2EE.m" />
+    </platform>
+   
+
+</plugin>
