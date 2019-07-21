@@ -51,12 +51,27 @@ public class E2EE extends CordovaPlugin {
             callbackContext.sendPluginResult( new PluginResult(PluginResult.Status.OK, challenge));
 
         } else if(action.equals("mockServerChallengeResponse")){
+
             LOG.e(TAG, "Plugin mockServerChallengeResponse");
             JSONObject clientChallenge = args.getJSONObject(0);
 
             JSONObject mockServerChallengeResponse_obj = mockServerChallengeResponse(clientChallenge);
 
             callbackContext.sendPluginResult( new PluginResult(PluginResult.Status.OK, mockServerChallengeResponse_obj));
+
+        } else if(action.equals("verifyResponse")){
+            LOG.e(TAG, "Plugin verifyResponse");
+
+            JSONObject serverChallenge = args.getJSONObject(0);
+
+            JSONObject clientResponse = verifyResponse(serverChallenge);
+
+            if(clientResponse != null) {
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, clientResponse));
+            }else{
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Something wrong"));
+            }
+
         } else {
             return false;
         }
@@ -101,5 +116,43 @@ public class E2EE extends CordovaPlugin {
         ret.put("publicKey", publicKey);
 
         return ret;
+    }
+
+    private JSONObject verifyResponse(JSONObject serverResponse_obj) throws JSONException{
+
+        JSONObject ret = new JSONObject();
+
+        String serverResponse = serverResponse_obj.getString("serverResponse");
+        String serverChallenge = serverResponse_obj.getString("serverChallenge");
+        String publicKey = serverResponse_obj.getString("publicKey");
+
+        if (serverResponse == null) LOG.e(TAG, "Without serverResponse!");
+        if (serverChallenge == null) LOG.e(TAG, "Without serverChallenge!");
+        if (publicKey == null) LOG.e(TAG, "Without publicKey!");
+        if ((serverResponse == null) || (serverChallenge == null) || (publicKey == null)) {
+            return null;
+        }
+
+        // 1.2) Verify server response value
+        LOG.e(TAG,"Verify server response value...");
+        if (!crClientObject.verifyResponse(serverResponse)) {
+            LOG.e(TAG,"Server response value verify fail, is not authorized server.");
+            return null;
+        }
+
+        // 2.1) Generate session key, calculate response value & request to server
+        LOG.e(TAG, "Generate session key, calculate response value & request to server...");
+        String sessionKey = crClientObject.generateSessionKey(publicKey);
+        if(sessionKey == null) {
+            LOG.e(TAG, "Generate session key failure, maybe has wrong public key!");
+            return null;
+        }
+        String clientResponse = crClientObject.calculateResponse(serverChallenge);
+
+        ret.put("sessionKey", sessionKey);
+        ret.put("clientResponse", clientResponse);
+
+        return ret;
+
     }
 }
