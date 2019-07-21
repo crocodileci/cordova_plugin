@@ -23,7 +23,8 @@ public class E2EE extends CordovaPlugin {
     private final String TAG = "E2EE";
 
      private volatile boolean bulkEchoing;
-     private ChallengeResponse crObject;
+     private ChallengeResponse crClientObject;
+     private ChallengeResponse crMockServerObject;
 
      /**
      * Executes the request and returns PluginResult.
@@ -49,6 +50,13 @@ public class E2EE extends CordovaPlugin {
 
             callbackContext.sendPluginResult( new PluginResult(PluginResult.Status.OK, challenge));
 
+        } else if(action.equals("mockServerChallengeResponse")){
+            LOG.e(TAG, "Plugin mockServerChallengeResponse");
+            JSONObject clientChallenge = args.getJSONObject(0);
+
+            JSONObject mockServerChallengeResponse_obj = mockServerChallengeResponse(clientChallenge);
+
+            callbackContext.sendPluginResult( new PluginResult(PluginResult.Status.OK, mockServerChallengeResponse_obj));
         } else {
             return false;
         }
@@ -59,17 +67,38 @@ public class E2EE extends CordovaPlugin {
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         LOG.e(TAG, "initialize");
 
-        this.crObject = new ChallengeResponse();
+        this.crClientObject = new ChallengeResponse();
 
-        LOG.e(TAG, crObject.toString());
+        LOG.e(TAG, this.crClientObject.toString());
+
+        this.crMockServerObject = new ChallengeResponse();
+
+        LOG.e(TAG, this.crMockServerObject.toString());
 
     }
 
     private JSONObject generateChallenge() throws JSONException{
         JSONObject ret = new JSONObject();
-        String challenge = this.crObject.generateChallege();
+        String challenge = this.crClientObject.generateChallege();
 
         ret.put("clientChallenge", challenge);
+
+        return ret;
+    }
+
+    private JSONObject mockServerChallengeResponse(JSONObject clientChallenge_obj) throws JSONException{
+
+        JSONObject ret = new JSONObject();
+
+        String clientChallenge = clientChallenge_obj.getString("clientChallenge");
+
+        String serverResponse   = crMockServerObject.calculateResponse(clientChallenge);
+        String serverChallenge  = crMockServerObject.generateChallege();
+        String publicKey        = crMockServerObject.publicKey();
+
+        ret.put("serverResponse", serverResponse);
+        ret.put("serverChallenge", serverChallenge);
+        ret.put("publicKey", publicKey);
 
         return ret;
     }
