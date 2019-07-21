@@ -86,6 +86,21 @@ public class E2EE extends CordovaPlugin {
                 callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Something wrong"));
             }
 
+        } if(action.equals("sessionKeyDecrypt")){
+            LOG.e(TAG, "Plugin sessionKeyDecrypt");
+
+            String cipherText = args.getString(0);
+
+            String plainText = sessionKeyDecrypt(cipherText);
+
+
+            if(plainText != null) {
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, plainText));
+            }else{
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Something wrong"));
+            }
+
+
         } else {
             return false;
         }
@@ -204,5 +219,13 @@ public class E2EE extends CordovaPlugin {
 
         return ret;
 
+    }
+
+
+    private String sessionKeyDecrypt(String cipherText) throws JSONException{
+
+        String ret = crClientObject.decrypt(cipherText);
+
+        return ret;
     }
 }

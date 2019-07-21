@@ -43,13 +43,13 @@ var template = {
     //使用generateChallenge 產生的session key加密明文
     //參數 plainText: 明文 string
     //使用success callback 回傳加密後之密文 Base64 encoded string
-    sessionKeyEncrypt: function (successCallback, errorCallback, plainText) {
+    sessionKeyEncrypt: function (plainText, successCallback, errorCallback) {
         exec(successCallback, errorCallback, 'E2EE', "sessionKeyEncrypt", [plainText]);
     },
     //使用generateChallenge 產生的session key解密密文
     //參數 cipherText: 密文 base64 encoded string
     //使用success callback 回傳解密後之明文 string
-    sessionKeyDecrypt: function (successCallback, errorCallback, cipherText) {
+    sessionKeyDecrypt: function (cipherText, successCallback, errorCallback, cipherText) {
         exec(successCallback, errorCallback, 'E2EE', "sessionKeyDecrypt", [cipherText]);
     }
 };
