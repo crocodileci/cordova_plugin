@@ -21,6 +21,8 @@
         </config-file>
 
         <source-file src="src/android/E2EE.java" target-dir="src/com/hitrust/plugins" />
+        <source-file src="src/android/CRYPTO.java" target-dir="src/com/hitrust/plugins" />
+        <source-file src="src/android/ChallengeResponse.java" target-dir="src/com/hitrust/plugins" />
     </platform>
    
 

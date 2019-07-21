@@ -15,18 +15,12 @@ var template = {
         exec(successCallback, errorCallback, 'E2EE', action, [message]);
     },
     //產生challenge值
-    //參數 aesKey: AES256的key, Hex string
-    //使用success callback 回傳challenge值
-    //challenge產生的方式為
-    //產生一把random AES 256 Key當作Session Key
-    // session key = random AES256Key
-    //組合一個byte array 格式為 "HiTRUST".getbytes() + session key 作為challenge值
-    // challenge: byte[] = "HiTRUST".getbytes() + session key
-    //使用內埋的AES 256 Key 加密該字串: A key Enc(challenge, pkcs5Padding)
-    // encrypt_challenge: byte[] = AkeyEnc(challenge, pkcs5Padding)
-    //回傳HexString(encrypt_challenge)
-    generateChallenge: function (successCallback, errorCallback, aesKey) {
-        exec(successCallback, errorCallback, 'E2EE', "generateChallenge", [aesKey]);
+    //演算法
+    //隨機產生一個資料長度為 16 bytes長度的 challenge
+    // challenge_base64 = Base64_encode(challenge)
+    //使用success傳回結果: Object, {clientChallenge: challenge_base64}
+    generateChallenge: function (successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'E2EE', "generateChallenge", []);
     },
     //驗證response
     //參數 response: response, Hex string
