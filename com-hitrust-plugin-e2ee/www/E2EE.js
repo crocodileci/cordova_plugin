@@ -22,15 +22,23 @@ var template = {
     generateChallenge: function (successCallback, errorCallback) {
         exec(successCallback, errorCallback, 'E2EE', "generateChallenge", []);
     },
+    //模擬伺服器回覆challenge
+    //參數 clientChallenge: Object, {clientChallenge: challenge_base64}
+    //使用success傳回結果: Object, {serverResponse: base64String, serverChallenge: base64String, publicKey: base64String}
+    mockServerChallengeResponse: function (clientChallenge, successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'E2EE', "mockServerChallengeResponse", [clientChallenge]);
+    },
     //驗證response
-    //參數 response: response, Hex string
-    //使用success callback 回傳驗證結果 Boolen, true: 驗證通過, false: 驗證失敗
-    //驗證演算法
-    //將Hex string 轉為byte array
-    //將該byte array使用public key 解密取得明文
-    //比對解密後的明文為generateChallenge產生的那把random key則回傳true，若不是則回傳false
-    verifyResponse: function (successCallback, errorCallback, response) {
-        exec(successCallback, errorCallback, 'E2EE', "verifyResponse", [response]);
+    //參數 serverResponse: Object, {serverResponse: base64String, serverChallenge: base64String, publicKey: base64String}
+    //使用success傳回結果: {sessionKey: base64String, clientResponse: base64String}
+    verifyResponse: function (serverResponse, successCallback, errorCallback, ) {
+        exec(successCallback, errorCallback, 'E2EE', "verifyResponse", [serverResponse]);
+    },
+    //模擬伺服器回傳response
+    //參數 clientResponse: {sessionKey: base64String, clientResponse: base64String}
+    //使用success傳回結果: {answer: base64String}
+    mockServerResponseResponse: function(clientResponse, successCallback, errorCallback){
+        exec(successCallback, errorCallback, 'E2EE', "mockServerResponseResponse", [clientResponse]);
     },
     //使用generateChallenge 產生的session key加密明文
     //參數 plainText: 明文 string
