@@ -51,6 +51,12 @@ var template = {
     //使用success callback 回傳解密後之明文 string
     sessionKeyDecrypt: function (cipherText, successCallback, errorCallback) {
         exec(successCallback, errorCallback, 'E2EE', "sessionKeyDecrypt", [cipherText]);
+    },
+    mockServerSessionKeyDecrypt(cipherText, successCallback, errorCallback){
+        exec(successCallback, errorCallback, 'E2EE', "mockServerSessionKeyDecrypt", [cipherText]);
+    },
+    mockServerSessionKeyEncrypt(plainText, successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'E2EE', "mockServerSessionKeyEncrypt", [plainText]);
     }
 };
 
