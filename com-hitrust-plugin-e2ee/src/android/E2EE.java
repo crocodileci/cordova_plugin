@@ -72,6 +72,20 @@ public class E2EE extends CordovaPlugin {
                 callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Something wrong"));
             }
 
+        } else if(action.equals("mockServerResponseResponse")){
+
+            LOG.e(TAG, "Plugin mockServerResponseResponse");
+
+            JSONObject clientResponse = args.getJSONObject(0);
+
+            JSONObject mockServerResponse = mockServerResponseResponse(clientResponse);
+
+            if(clientResponse != null) {
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, mockServerResponse));
+            }else{
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Something wrong"));
+            }
+
         } else {
             return false;
         }
@@ -151,6 +165,42 @@ public class E2EE extends CordovaPlugin {
 
         ret.put("sessionKey", sessionKey);
         ret.put("clientResponse", clientResponse);
+
+        return ret;
+
+    }
+
+    private JSONObject mockServerResponseResponse(JSONObject clientResponse_obj) throws JSONException{
+
+        JSONObject ret = new JSONObject();
+
+        String clientResponse = clientResponse_obj.getString("clientResponse");
+        String sessionKey = clientResponse_obj.getString("sessionKey");
+
+        if (clientResponse == null) {
+            LOG.e(TAG, "Without clientResponse");
+            return null;
+        }
+        if (sessionKey == null) {
+            LOG.e(TAG, "Without sessionKey");
+            return null;
+        }
+
+        // verify client response
+        if (!crMockServerObject.verifyResponse(clientResponse)) {
+            LOG.e(TAG, "Client response verify error");
+            return null;
+        }
+
+        // load session key to crObj
+        String priKeyB64 = crMockServerObject.privateKey();
+        if (!crMockServerObject.storeSessionKey(priKeyB64, sessionKey)) {
+            LOG.e(TAG, "Decrypt session error");
+        }
+
+        // response encrypted answer to client
+        String answer = crMockServerObject.encrypt("Synchronize session key complete");
+        ret.put("answer", answer);
 
         return ret;
 
