@@ -49,7 +49,7 @@ var template = {
     //使用generateChallenge 產生的session key解密密文
     //參數 cipherText: 密文 base64 encoded string
     //使用success callback 回傳解密後之明文 string
-    sessionKeyDecrypt: function (cipherText, successCallback, errorCallback, cipherText) {
+    sessionKeyDecrypt: function (cipherText, successCallback, errorCallback) {
         exec(successCallback, errorCallback, 'E2EE', "sessionKeyDecrypt", [cipherText]);
     }
 };
