@@ -101,6 +101,19 @@ public class E2EE extends CordovaPlugin {
             }
 
 
+        } else if (action.equals("sessionKeyEncrypt")){
+            LOG.e(TAG, "Plugin sessionKeyEncrypt");
+
+            String plainText = args.getString(0);
+
+            String cipherText = sessionKeyEncrypt(plainText);
+
+            if(plainText != null) {
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, cipherText));
+            }else{
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Something wrong"));
+            }
+
         } else {
             return false;
         }
@@ -222,10 +235,18 @@ public class E2EE extends CordovaPlugin {
     }
 
 
-    private String sessionKeyDecrypt(String cipherText) throws JSONException{
+    private String sessionKeyDecrypt(String cipherText){
 
         String ret = crClientObject.decrypt(cipherText);
 
         return ret;
+    }
+
+    private String sessionKeyEncrypt(String plainText) {
+
+        String ret = crClientObject.encrypt(plainText);
+
+        return ret;
+
     }
 }
